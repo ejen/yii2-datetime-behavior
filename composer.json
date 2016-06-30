@@ -1,0 +1,27 @@
+{
+    "name": "ejen/yii2-datetime-behavior",
+    "description": "Yii2 extension for saving datetime in given format",
+    "keywords": ["yii2", "date", "time", "datetime", "behavior"],
+    "type": "yii2-extension",
+    "license": "MIT",
+    "support": {
+        "source": "https://github.com/ejen/yii2-datetime-behavior",
+        "issues": "https://github.com/ejen/yii2-datetime-behavior/issues"
+    },
+    "authors": [
+        {
+            "name": "alexeevdv",
+            "homepage": "https://alexeevdv.ru/",
+            "email": "mail@alexeevdv.ru"
+        }
+    ],
+    "minimum-stability": "stable",
+    "require": {
+        "yiisoft/yii2": "~2.0.6"
+    },
+    "autoload": {
+        "psr-4": {
+            "ejen\\behaviors\\": ""
+        }
+    }
+}
