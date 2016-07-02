@@ -11,24 +11,16 @@ class DateTimeBehavior extends \yii\behaviors\AttributeBehavior
     public $sourceFormat = "php:d/m/Y";
     public $destinationFormat = "php:Y-m-d H:i:s";
 
-    public function init()
+    public function events()
     {
-        parent::init();
-
-        if (!empty($this->attributes))
-        {
-            $this->attributes = [
-                ActiveRecord::EVENT_BEFORE_INSERT => $this->attributes,
-                ActiveRecord::EVENT_BEFORE_UPDATE => $this->attributes,
-            ];
-        }
+        return [
+            'beforeInsert' => 'evaluateAttributes',
+            'beforeUpdate' => 'evaluateAttributes'
+        ];
     }
 
-    public function getValue($event)
+    public function evaluateAttributes($event)
     {
-        $value = $event->sender->license_issue;
-        if (empty($value)) return null;
-
         if (strncmp($this->sourceFormat, 'php:', 4) === 0)
         {
             $sourceFormat = FormatConverter::convertDatePhpToIcu(substr($this->sourceFormat, 4));
@@ -39,6 +31,12 @@ class DateTimeBehavior extends \yii\behaviors\AttributeBehavior
         } 
 
         $formatter = new \IntlDateFormatter(Yii::$app->formatter->locale, null, null, Yii::$app->formatter->timeZone, Yii::$app->formatter->calendar, $sourceFormat);
-        return Yii::$app->formatter->asDateTime($formatter->parse($value), $this->destinationFormat);
+        foreach ($this->attributes as $attribute)
+        {
+            $value = $this->owner->$attribute;
+            if (empty($value)) continue;
+
+            $this->owner->$attribute = Yii::$app->formatter->asDateTime($formatter->parse($value), $this->destinationFormat);
+        }
     }
 }
